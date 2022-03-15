@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Startmin - Bootstrap Admin Theme</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        
+        <link href="../css/metisMenu.min.css" rel="stylesheet">
+        
+
+        <!-- Timeline CSS -->
+        <!--
+        <link href="../css/timeline.css" rel="stylesheet">
+        -->
+
+        <!-- Custom CSS -->
+        <link href="../css/startmin.css" rel="stylesheet">
+        <link href="../css/clusterize.css" rel="stylesheet">
+
+        <!-- Morris Charts CSS -->
+        <!--
+        <link href="../css/morris.css" rel="stylesheet">
+        -->
+
+        <!-- Custom Fonts -->
+        <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!--
+        <script src="https://unpkg.com/clusterize.js@0.18.0/clusterize.min.js"></script>
+	-->
+        <script src="../js/clusterize.min.js"></script>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+
+        <div id="wrapper" class="toggled">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+<!--
+               <button type="button" class="btn btn-default menu-toggle">
+	           <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+	        </button>
+-->
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <li><a href="#"><i class="fa fa-home fa-fw"></i> Website</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <button type="button" class="menu-toggle">
+                        <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+                    </button>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <div>
+                        <input type="text"  id="search" class="navbar-serch-input"  size="90"  placeholder="Search...">
+                                        <button  type="button" id="search-button" >
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button  type="button" id="search-reset" >
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+<!--
+                                        <div class="order-option">
+                                             Quantity:
+-->
+                                             <span id="quantity-field">
+                                                 <button id="up">+</button>
+                                                 <input type="text" id="quantity" value="1" size="3"
+                                                      style="margin-right:0px; padding-right:1px;border:none; text-align:right;"
+                                                  >
+                                                 <input type="text" id="quantity_base" value="/ 20" size="3"
+                                                      style="margin-left:-4px; padding-left:2px;border:none;"
+                                                      readonly
+                                                  >
+                                                 <button id="down">-</button>
+                                             </span>
+<!--
+                                        </div>
+-->
+                    </div>
+                </ul>
+
+
+                <ul class="nav navbar-right navbar-top-links">
+                    <li class="dropdown navbar-inverse">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell fa-fw"></i> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-comment fa-fw"></i> New Comment
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-tasks fa-fw"></i> New Task
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i> secondtruth <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /.navbar-top-links -->
+
+		<div  id="sidebar-wrapper">
+		<div  class="navbar-default sidebar  navbar-left" role="navigation">
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+                            <li class="sidebar-search">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                </span>
+                                </div>
+                                <!-- /input-group -->
+                            </li>
+
+<!--SIDE_MENU_START-->
+<!--
+                            <li>
+                                <a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#page1"><i class="fa fa-files-o fa-fw"></i> Sample Pages1</a>
+                            </li>
+                            <li>
+                                <a href="#page2"><i class="fa fa-files-o fa-fw"></i> Sample Pages2</a>
+                            </li>
+                            <li>
+                                <a href="#page3"><i class="fa fa-files-o fa-fw"></i> Sample Pages3</a>
+                            </li>
+                            <li>
+                                <a href="#page4"><i  class="fa fa-files-o fa-fw menu-item"></i> Sample Pages4</a>
+                            </li>
+
+-->
+<!--SIDE_MENU_END-->
+                        </ul>
+                    </div>
+                </div>
+	      </div> <!-- sidebar-wrapper -->
+            </nav>
+
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+<!--CONTENT_START-->
+<!--CONTENT_END-->
+                      </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- jQuery -->
+        <script src="../js/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="../js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        
+        <script src="../js/metisMenu.min.js"></script>
+<!--
+        <script src="../js/clusterize.min.js"></script>
+        <script src="../js/externs.js"></script>
+        -->
+
+        <!-- Morris Charts JavaScript -->
+        <!--
+        <script src="../js/raphael.min.js"></script>
+        <script src="../js/morris.min.js"></script>
+        <script src="../js/morris-data.js"></script>
+        -->
+
+        <!-- Custom Theme JavaScript -->
+        <script src="../js/startmin.js"></script>
+        
+        <script src="../js/jquery.scrollify.js"></script>
+        
+
+    <!-- Menu Toggle Script -->
+       <script>
+/*
+$(function() {  
+
+    // Default
+    jQuery.scrollSpeed(100, 1800);
+    
+    // Custom Easing
+    //jQuery.scrollSpeed(100, 800, 'easeOutCubic');
+    
+});
+  */       
+
+
+
+
+    $(".menu-toggle").click(function(e) {
+		            e.preventDefault();
+			            $("#wrapper").toggleClass("toggled");
+                                     console.log("click menu-toggle")
+				        });
+
+     console.log("menu-toggle set")
+
+   /*
+var data = [
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      1       </pre></div>', 
+'<div><pre>      2       </pre></div>', 
+'<div><pre>      3       </pre></div>', 
+'<div><pre>      4       </pre></div>', 
+'<div><pre>      5       </pre></div>', 
+'<div><pre>      6       </pre></div>', 
+'<div><pre>      7       </pre></div>', 
+'<div><pre>      8       </pre></div>', 
+'<div><pre>      9       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A  r    </pre></div>', 
+'<div><pre>      A  e    </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+];
+var clusterize = new Clusterize({
+  scrollId: 'scrollArea',
+  contentId: 'contentArea',
+  rows_in_block: 200,
+  blocks_in_cluster: 4
+});
+*/
+
+var data = [];
+var search_set = [];
+var clusterize;
+var search = document.getElementById('search');
+var search_button = document.getElementById('search-button');
+var search_reset = document.getElementById('search-reset');
+var search_number =1;
+
+function dataset(getdata) {
+
+	   //console.log(getdata);
+
+            //console.dir(getdata);
+   getdata=getdata.trim();
+   getdata=getdata.replace(/(\r?\n)+/g,"\n");
+
+	    data =  getdata.split(/\n/);
+            //console.log(data.length);
+            //console.log(data);
+
+	    clusterize = new Clusterize({
+	           scrollId: 'scrollArea',
+                   contentId: 'contentArea',
+		   rows: data,
+		   tag: 'div',
+		   rows_in_block: 26, 
+	           //rows_in_block: 200,
+	           //rows_in_block: 5000,
+		   //blocks_in_cluster: 40
+		   show_no_data_row: false
+	   });
+
+
+
+}
+
+
+    $.get("content_data.html",
+         dataset,
+	 'html'
+	 );
+
+var filterRows = function(rows) {
+  var results = [];
+  for(var i = 0, ii = rows.length; i < ii; i++) {
+    if(rows[i].active) results.push(rows[i].markup)
+  }
+  return results;
+}
+
+var onSearchReset = function() {
+  console.log("serch reset...");
+
+  for(var x=0; x<search_set.length;  x++) {
+     var set = search_set[x];
+     data[set['no']]= set['data'];
+
+  }
+
+  search_set.length = 0;
+  clusterize.update(data);
+}
+var onSearch = function() {
+  console.log("serch...");
+  console.log("value:" +search.value);
+  //search_set.length = 0;
+
+  var s_count =0;
+  for( var i=0; i<data.length; i++) {
+
+     if (data[i].includes(search.value)) {
+       //console.log("match: (" +  ") " + data[i]);
+                s_count++;
+       //var  tmp = data[i].replace(/^\<div\>/, "<div id=\"SEARCH_POINT_" + s_count.toString() +"\">");
+       var  tmp = data[i].replace(/^\<tr\>/, "<tr id=\"SEARCH_POINT_" + s_count.toString() +"\">");
+       search_set.push({ no: i, data: data[i]})
+       //var  tmp = data[i].replace(/\<pre\>/, "<pre style=\"background-color:yellow;\">");
+       var  tmp2 = tmp.replace(/\<pre\>/, "<pre style=\"background-color:yellow;\">");
+       console.log(tmp2);
+       data[i] = tmp2;
+
+
+     }
+
+  }
+       //data[10] = "<div><pre>    OKOKOK              </pre></div>";
+ 
+  clusterize.update(data);
+
+  search_number = 1;
+  quantity.value = 1;
+  quantity_base.value = '/ ' + s_count.toString();
+
+  /*
+  //document.getElementById('SEARCH_PONT')[3].scrollIntoView();
+  var offset = $('#SEARCH_POINT').offset() || {top: 0, left: 0};
+
+  $(window).scrollTop(offset.top);
+  */
+
+  // https://qiita.com/amamamaou/items/728d571d508347b2bc82
+
+  //var element = document.getElementById('SEARCH_POINT_1');
+  var element = document.getElementById('SEARCH_POINT_' + search_number.toString());
+
+  console.dir(element);
+// 上端に来るようにスクロールさせたい
+element.scrollIntoView(true);
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+
+
+/*
+  for(var i = 0, ii = data.length; i < ii; i++) {
+    var suitable = false;
+    for(var j = 0, jj = data[i].values.length; j < jj; j++) {
+      if(data[i].values[j].toString().indexOf(search.value) + 1)
+        suitable = true;
+    }
+    data[i].active = suitable;
+  }
+  clusterize.update(filterRows(data));
+*/
+}
+
+function next_search() {
+  search_number = quantity.value ;
+
+   console.log("next_seach :",search_number.toString());
+  var element = document.getElementById('SEARCH_POINT_' + search_number.toString());
+
+  element.scrollIntoView(true);
+
+}
+
+//search.oninput = onSearch;
+search_button.onclick = onSearch;
+search_reset.onclick = onSearchReset;
+
+//-----------------------------
+quantity = document.getElementById('quantity');
+quantity_base = document.getElementById('quantity_base');
+
+button_up=document.getElementById('up');
+button_down=document.getElementById('down');
+
+button_up.onclick=function() {setQuantity('up');}
+button_down.onclick=function() {setQuantity('down');}
+
+function setQuantity(upordown) {
+    var quantity = document.getElementById('quantity');
+
+    if (quantity.value > 1) {
+        if (upordown == 'up'){++quantity.value;}
+        else if (upordown == 'down'){--quantity.value;}}
+    else if (quantity.value == 1) {
+        if (upordown == 'up'){++quantity.value;}}
+    else
+        {quantity.value=1;}
+
+    next_search();
+}
+    </script>
+
+    </body>
+</html>

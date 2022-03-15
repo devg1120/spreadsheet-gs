@@ -1,0 +1,240 @@
+import os
+import sys
+import re
+import pprint
+import subprocess
+
+WHITE   = "\033[1;37m"  
+RED   = "\033[1;31m"  
+BLUE  = "\033[1;36m"
+YELLOW  = "\033[1;33m"
+GREEN = "\033[0;32m"
+RESET = "\033[0;0m"
+BOLD    = "\033[;1m"
+REVERSE = "\033[;7m"
+
+path1="../src"
+path2="/home/gusa1120/x-spreadsheet/src"
+# traverse root directory, and list directories as dirs and files as files
+def dump1(filepath):
+    for root, dirs, files in os.walk(filepath):
+        path = root.split(os.sep)
+        print((len(path) - 1) * '---', os.path.basename(root))
+        for file in files:
+            print(len(path) * '---', file)
+    
+def dump2(filepath):
+    for root, dirs, files in os.walk(filepath):
+        print('root -------------')
+        print(root)
+        print('dirs -------------')
+        print(dirs)
+        print('files -------------')
+        print(files)
+
+def get(filepath):
+    dic = {}
+    for root, dirs, files in os.walk(filepath):
+        #root_p = re.sub('^' + filepath , '', root)
+        root_p = root.replace(filepath , '')
+        if root_p == '':
+            root_p = '/'
+
+        dic[root_p] = { 'root'  : root_p,
+                      'files' : files,
+                      'dirs'  : dirs }
+    return dic
+
+def convlist(dic):
+    #filelist = ''
+    filelist = []
+    for element in dic:
+        #print('-------------------')
+        #pprint.pprint(dic[element])
+        #print('-------------------')
+        root = dic[element]['root']
+        for file in dic[element]['files']:
+            if root == '/':
+                #print(root + file)
+                str = root + file
+                #filelist += str + '\n'
+            else:
+                #print(root + '/' + file)
+                str = root + '/' + file
+                #filelist += str + '\n'
+                #filelist.append(str)
+            filelist.append( { 'path' : str, 'ignore' : False, 'other_exist' : False })
+
+    return filelist
+
+def is_exist( path, list):
+    for element in list:
+        if element['path'] == path:
+            return True
+    return False
+
+
+def diffcheck(list1, list2 ):
+    for element in list1:
+        element['other_exist'] = is_exist(element['path'], list2)
+    for element in list2:
+        element['other_exist'] = is_exist(element['path'], list1)
+
+
+#dump2(path)
+
+dic1 = get(path1)
+#pprint.pprint(dic1)
+dic2 = get(path2)
+#pprint.pprint(dic2)
+
+
+filelist1 = convlist(dic1)
+filelist2 = convlist(dic2)
+#print('---------------')
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+#print('-------------------------------------------------------')
+
+diffcheck(filelist1, filelist2)
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+
+def diff(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print(path1 + element['path'] + '  ->  ' +  path2 + element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["diff", "-y", diff1 , diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            sys.stdout.buffer.write(res.stdout)
+            
+
+def coloreddiff_stdout(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print('')
+            print( REVERSE + WHITE + '  ' + path1 + element['path'] + '  ->  ' +  path2 + element['path'] + '  ' + RESET)
+            print('')
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["colordiff", "-y", diff1, diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+                if len(line2) > 62:
+                    c = line2[62]
+                    if c == '<':
+                        print(RED +line2[:-1] + RESET)
+                    elif c == '|':
+                        print(YELLOW + line2[:-1] + RESET)
+                    elif c == '>':
+                        print(BLUE + line2[:-1] + RESET)
+                    else:
+                        print(line2[:-1])
+                line = f.readline()
+            f.close()
+
+
+def coloreddiff_markdown(filelist, output_file):
+    of = open(output_file,'w')
+
+    for element in filelist:
+        if element['other_exist']:
+            of.write('\n')
+            of.write(  '##  ' + path1 + element['path'] + '  ->  ' +  path2 + element['path'] + '  ' )
+            of.write('\n')
+            of.write('```\n')
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["colordiff", "-y", diff1, diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+                if len(line2) > 62:
+                    c = line2[62]
+                    if c == '<':
+                        #print(RED +line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:red\">" +line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    elif c == '|':
+                        #print(YELLOW + line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:yellow\">" + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    elif c == '>':
+                        #print(BLUE + line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:blue\">"  + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    else:
+                        #print(line2[:-1])
+                        #of.write("<div> <span style=\"color:black\">" + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                line = f.readline()
+            f.close()
+            of.write('```\n')
+    of.close()
+
+################################################################################################
+
+#diff(filelist1)
+coloreddiff_stdout(filelist1)
+coloreddiff_markdown(filelist1, "TEST.md")
+
+
+
+
+
+###
+command = ["colordiff", "-y", "AAA.txt", "BBB.txt"]
+#command = ["diff", "-y", "AAA.txt", "BBB.txt"]
+res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#sys.stdout.buffer.write(res.stdout)
+f = open("tmp.txt", "wb")
+f.write(res.stdout)
+f.close()
+
+f = open("tmp.txt", "r")
+line = f.readline()
+ 
+while line:
+
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+
+    #print(str(len(line)))
+    #print(str(len(line2)))
+    #print(str(list(line)))
+    #print(str(list(line2)))
+
+    #print(line[:-1])
+    #print(line2[:-1])
+
+    if len(line2) > 62:
+        #print("["+line2[62] + "]")
+        c = line2[62]
+        if c == '<':
+              print(RED +line2[:-1] + RESET)
+        elif c == '|':
+              print(YELLOW + line2[:-1] + RESET)
+        elif c == '>':
+              print(BLUE + line2[:-1] + RESET)
+        else:
+              print(line2[:-1])
+
+    line = f.readline()
+
+f.close()
+
+

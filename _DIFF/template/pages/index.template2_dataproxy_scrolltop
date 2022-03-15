@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Startmin - Bootstrap Admin Theme</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        
+        <link href="../css/metisMenu.min.css" rel="stylesheet">
+        
+
+        <!-- Timeline CSS -->
+        <!--
+        <link href="../css/timeline.css" rel="stylesheet">
+        -->
+
+        <!-- Custom CSS -->
+        <link href="../css/startmin.css" rel="stylesheet">
+        <!--
+        <link href="../css/clusterize.css" rel="stylesheet">
+        -->
+
+        <!-- Morris Charts CSS -->
+        <!--
+        <link href="../css/morris.css" rel="stylesheet">
+        -->
+
+        <!-- Custom Fonts -->
+        <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!--
+        <script src="https://unpkg.com/clusterize.js@0.18.0/clusterize.min.js"></script>
+	-->
+        <script src="../js/clusterize.min.js"></script>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+
+        <div id="wrapper" class="toggled">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+<!--
+               <button type="button" class="btn btn-default menu-toggle">
+	           <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+	        </button>
+-->
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <li><a href="#"><i class="fa fa-home fa-fw"></i> Website</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <button type="button" class="menu-toggle">
+                        <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+                    </button>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <div>
+                        <input type="text"  id="search" class="navbar-serch-input"  size="30"  placeholder="Search...">
+                                        <button  type="button" id="search-button" >
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button  type="button" id="search-reset" >
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+<!--
+                                        <div class="order-option">
+                                             Quantity:
+-->
+                                             <span id="quantity-field">
+                                                 <button id="up">+</button>
+                                                 <input type="text" id="quantity" value="" size="3"
+                                                      style="margin-right:0px; padding-right:1px;border:none; text-align:right;"
+                                                  >
+                                                 <input type="text" id="quantity_base" value="/" size="3"
+                                                      style="margin-left:-4px; padding-left:2px;border:none;"
+                                                      readonly
+                                                  >
+                                                 <button id="down">-</button>
+                                             </span>
+<!--
+                                        </div>
+-->
+                    </div>
+                </ul>
+
+
+                <ul class="nav navbar-right navbar-top-links">
+                    <li class="dropdown navbar-inverse">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell fa-fw"></i> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-comment fa-fw"></i> New Comment
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-tasks fa-fw"></i> New Task
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i> secondtruth <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /.navbar-top-links -->
+
+		<div  id="sidebar-wrapper">
+		<div  class="navbar-default sidebar  navbar-left" role="navigation">
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+				<!--
+                            <li class="sidebar-search">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                </span>
+                                </div>
+                            </li>
+			    -->
+
+<!--SIDE_MENU_START-->
+<!--
+                            <li>
+                                <a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#page1"><i class="fa fa-files-o fa-fw"></i> Sample Pages1</a>
+                            </li>
+                            <li>
+                                <a href="#page2"><i class="fa fa-files-o fa-fw"></i> Sample Pages2</a>
+                            </li>
+                            <li>
+                                <a href="#page3"><i class="fa fa-files-o fa-fw"></i> Sample Pages3</a>
+                            </li>
+                            <li>
+                                <a href="#page4"><i  class="fa fa-files-o fa-fw menu-item"></i> Sample Pages4</a>
+                            </li>
+
+-->
+<!--SIDE_MENU_END-->
+                        </ul>
+                    </div>
+                </div>
+	      </div> <!-- sidebar-wrapper -->
+            </nav>
+
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+<!--CONTENT_START-->
+<!--CONTENT_END-->
+                      </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- jQuery -->
+        <script src="../js/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="../js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        
+        <script src="../js/metisMenu.min.js"></script>
+<!--
+        <script src="../js/clusterize.min.js"></script>
+        <script src="../js/externs.js"></script>
+        -->
+
+        <!-- Morris Charts JavaScript -->
+        <!--
+        <script src="../js/raphael.min.js"></script>
+        <script src="../js/morris.min.js"></script>
+        <script src="../js/morris-data.js"></script>
+        -->
+
+        <!-- Custom Theme JavaScript -->
+        <script src="../js/startmin.js"></script>
+        
+        <script src="../js/jquery.scrollify.js"></script>
+        
+
+    <!-- Menu Toggle Script -->
+       <script>
+/*
+$(function() {  
+
+    // Default
+    jQuery.scrollSpeed(100, 1800);
+    
+    // Custom Easing
+    //jQuery.scrollSpeed(100, 800, 'easeOutCubic');
+    
+});
+  */       
+
+/*
+
+https://stackoverflow.com/questions/12965296/how-to-get-maximum-document-scrolltop-value
+*/
+
+(function(elmProto){
+    if ('scrollTopMax' in elmProto) {
+        return;
+    }
+    Object.defineProperties(elmProto, {
+        'scrollTopMax': {
+            get: function scrollTopMax() {
+              return this.scrollHeight - this.clientTop;
+            }
+        },
+        'scrollLeftMax': {
+            get: function scrollLeftMax() {
+              return this.scrollWidth - this.clientLeft;
+            }
+        }
+    });
+}
+)(Element.prototype);
+
+
+
+    $(".menu-toggle").click(function(e) {
+		            e.preventDefault();
+			            $("#wrapper").toggleClass("toggled");
+                                     console.log("click menu-toggle")
+				        });
+
+     //console.log("menu-toggle set")
+
+   /*
+var data = [
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      1       </pre></div>', 
+'<div><pre>      2       </pre></div>', 
+'<div><pre>      3       </pre></div>', 
+'<div><pre>      4       </pre></div>', 
+'<div><pre>      5       </pre></div>', 
+'<div><pre>      6       </pre></div>', 
+'<div><pre>      7       </pre></div>', 
+'<div><pre>      8       </pre></div>', 
+'<div><pre>      9       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A  r    </pre></div>', 
+'<div><pre>      A  e    </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+];
+var clusterize = new Clusterize({
+  scrollId: 'scrollArea',
+  contentId: 'contentArea',
+  rows_in_block: 200,
+  blocks_in_cluster: 4
+});
+*/
+
+var data = [];
+var search_set = [];
+var clusterize;
+var search = document.getElementById('search');
+var search_button = document.getElementById('search-button');
+var search_reset = document.getElementById('search-reset');
+var search_number =1;
+
+var step_row = 0;
+var file_index =[];
+
+var curent_active_menu_item = null;
+
+//devicePixelRatio = 1;
+
+function active_index(index) {
+
+  //console.log("active_index: " + index);
+
+  //return;
+
+  var head = 0;
+  var tail = file_index.length;
+  //console.log(tail);
+  while (head <= tail) {
+     var center = Math.floor((head + tail) / 2);  
+     //console.log("center:" + center);
+    if (file_index[center]['head_index'] <= index &&
+        file_index[center]['tail_index'] >= index 
+       ) {
+         //console.log(" *** active: " + index + " " +file_index[center]['menuid']);
+	 var menu_item = document.getElementById(file_index[center]['menuid']);
+         if (menu_item) {
+             //console.dir(menu_item);
+
+               if (curent_active_menu_item) {
+                  curent_active_menu_item.classList.remove("active_item");
+               }
+
+                menu_item.classList.add("active_item");
+
+                curent_active_menu_item = menu_item;
+
+
+             } else {
+             console.log("not found menu_item");
+
+             }
+
+      return;
+    } else if (file_index[center]['tail_index'] < index) {
+      head = center + 1;
+    } else {
+      tail = center - 1;
+    }
+
+  }
+
+
+}
+
+
+function dataset(getdata) {
+
+	   //console.log(getdata);
+
+            //console.dir(getdata);
+   getdata=getdata.trim();
+   getdata=getdata.replace(/(\r?\n)+/g,"\n");
+
+	    data =  getdata.split(/\n/);
+            //console.log(data.length);
+            //console.log(data);
+            for (var x = 0; x < data.length; x++) {
+            result = data[x].match(/class=\"pagelink\"/);
+            if (result) {
+               //console.dir(data[x]);
+               var rs  = data[x].match(/id=\"(\S+)\" /);
+               //console.log(rs[0]);
+               //console.log(rs[1]);
+               var id = rs[1];
+
+               if (file_index.length > 0) {
+                   file_index[file_index.length -1 ]['tail_index'] = x -1;
+                   //file_index[1]['tail_index'] = x -1;
+                   //console.dir(file_index[0]['tail_index']);
+               }
+
+               file_index.push(
+                    {
+                         head_index : x,
+                         tail_index : 9999,
+                         id : id,
+                         menuid:  'menu_' + id
+                    }
+               );
+
+            }
+
+            }
+
+            console.dir(file_index);
+
+	    clusterize = new Clusterize({
+	           scrollId: 'scrollArea',
+                   contentId: 'contentArea',
+		   rows: data,
+		   //tag: 'div',
+		   //rows_in_block: 100, 
+		   //blocks_in_cluster: 4,
+                   callbacks: {
+                                clusterWillChange: function() {},
+                                clusterChanged: function() {},
+                                scrollingProgress: function(progress) {
+                                    //console.log("scroll:" + progress.toString());
+                                    var index = (rows * progress/100 ).toFixed(0)
+                                    //console.log(index);
+                                    //index = index +1;
+                                    //active_index(index );
+                                    var scrollElement = document.getElementById('scrollArea');
+                                    // スクロール要素の絶対座標を取得
+                                    var rect = scrollElement.getBoundingClientRect();
+                                    // ドキュメントの絶対座標からスクロール要素で表示している要素の一番上のやつを取得
+                                    //console.log(" devicePixelRatio:" ,devicePixelRatio) ;
+                                    //console.log("rect:", rect.left, rect.top);
+                                    //var targetElement = document.elementFromPoint(rect.left+3, rect.top+1 );
+                                    var targetElement = document.elementFromPoint(
+                                    //rect.left *  devicePixelRatio, 
+                                    rect.left , 
+                                    //rect.top  *  devicePixelRatio
+                                    rect.top  
+                                    );
+                                    //document.elementFromPoint(X - window.pageXOffset, Y - window.pageYOffset);
+
+                                    //console.log(targetElement.attributes['row']);
+                                    if (targetElement) {
+                                        var attrs = targetElement.attributes;
+                                        //console.log(targetElement.tagName);
+                                        //console.dir(targetElement);
+                                        var row;
+                                        //console.dir(attrs);
+                                        for(var i = attrs.length - 1; i >= 0; i--) {
+                                             //output += attrs[i].name + "->" + attrs[i].value;
+                                             if (attrs[i].name == "row") {
+                                               row = attrs[i].value; 
+                                               break;
+                                             }
+                                         }
+                                         if (row) {
+                                                console.log(row);
+                                                active_index(parseInt(row, 10));
+                                          } else {
+                                                console.log("row not match:"+ targetElement.tagName);
+                                                console.dir(targetElement);
+                                                //console.dir(attrs);
+                                          }
+                                      } else {
+                                           console.log("targetElment not found" );
+
+                                      }
+                                 }
+                              } //--callbacks
+	   });
+
+	   clusterize.refresh(true);
+           var rows = clusterize.getRowsAmount();
+	   var max = document.getElementById('scrollArea').scrollTopMax ;
+	   //step_row = max/ (rows+5);
+	   step_row = max/ (rows) ;
+
+           console.log("rows      :" + rows.toString());
+           console.log("scroll_max:" + max.toString());
+           console.log("step_row  :" + step_row.toString());
+//active_index(1);
+
+
+}
+
+
+    $.get("content_data.html",
+         dataset,
+	 'html'
+	 );
+
+var filterRows = function(rows) {
+  var results = [];
+  for(var i = 0, ii = rows.length; i < ii; i++) {
+    if(rows[i].active) results.push(rows[i].markup)
+  }
+  return results;
+}
+
+var onSearchReset = function() {
+  console.log("serch reset...");
+
+  for(var x=0; x<search_set.length;  x++) {
+     var set = search_set[x];
+     data[set['row']-1]= set['data'];
+
+  }
+
+  search_set.length = 0;
+  clusterize.update(data);
+  quantity.value = '';
+  quantity_base.value = '/ ' ;
+}
+var onSearch_keydown = function(ele) {
+    if(event.key === 'Enter') {
+          console.log("keydown");
+          onSearch();
+    }
+}
+
+var onSearch = function() {
+
+  if (search.value == "") {
+      console.log("serch... no keyword");
+      return;
+  }
+  console.log("serch...");
+  console.log("value:" +search.value);
+  //search_set.length = 0;
+
+  var s_count =0;
+  for( var i=0; i<data.length; i++) {
+
+     if (data[i].includes(search.value)) {
+                s_count++;
+       var  tmp = data[i].replace(/^\<div/, "<div id=\"SEARCH_POINT_" + s_count.toString() +"\" ");
+       search_set.push({ row:i+1 , data: data[i]})
+       var  tmp2 = tmp.replace(/\<pre/, "<pre style=\"background-color:yellow;\" ");
+       data[i] = tmp2;
+
+
+     }
+
+  }
+       //data[10] = "<div><pre>    OKOKOK              </pre></div>";
+ 
+  clusterize.update(data);
+
+  search_number = 1;
+  quantity.value = 1;
+  quantity_base.value = '/ ' + s_count.toString();
+
+  /*
+  //document.getElementById('SEARCH_PONT')[3].scrollIntoView();
+  var offset = $('#SEARCH_POINT').offset() || {top: 0, left: 0};
+
+  $(window).scrollTop(offset.top);
+  */
+
+  // https://qiita.com/amamamaou/items/728d571d508347b2bc82
+
+  //var element = document.getElementById('SEARCH_POINT_1');
+  var element = document.getElementById('SEARCH_POINT_' + search_number.toString());
+
+  console.dir(element);
+// 上端に来るようにスクロールさせたい
+element.scrollIntoView(true);
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+
+
+/*
+  for(var i = 0, ii = data.length; i < ii; i++) {
+    var suitable = false;
+    for(var j = 0, jj = data[i].values.length; j < jj; j++) {
+      if(data[i].values[j].toString().indexOf(search.value) + 1)
+        suitable = true;
+    }
+    data[i].active = suitable;
+  }
+  clusterize.update(filterRows(data));
+*/
+}
+
+function next_search() {
+  search_number = quantity.value ;
+
+   console.log("next_seach :",search_number.toString());
+
+
+   var row = search_set[search_number]['row'];
+
+   document.getElementById('scrollArea').scrollTop = (row) * (step_row ) ;
+
+  var id = 'SEARCH_POINT_' + search_number.toString();
+   setTimeout(id_check, 300, id);
+
+}
+
+search.onkeydown = onSearch_keydown;
+search_button.onclick = onSearch;
+search_reset.onclick = onSearchReset;
+
+//-----------------------------
+quantity = document.getElementById('quantity');
+quantity_base = document.getElementById('quantity_base');
+
+button_up=document.getElementById('up');
+button_down=document.getElementById('down');
+
+button_up.onclick=function() {setQuantity('up');}
+button_down.onclick=function() {setQuantity('down');}
+
+function setQuantity(upordown) {
+  /*
+     if (upordown == 'up'){
+         var max = document.getElementById('scrollArea').scrollTopMax;
+         console.log("scrollMax:" + max.toString());
+         document.getElementById('scrollArea').scrollTop = max;
+         //document.getElementById('scrollArea').scrollTop = 70000;
+      }
+     if (upordown == 'down'){
+         document.getElementById('scrollArea').scrollTop = 0;
+      }
+  */
+  
+    var quantity = document.getElementById('quantity');
+
+    if (quantity.value > 1) {
+        if (upordown == 'up'){++quantity.value;}
+        else if (upordown == 'down'){--quantity.value;}}
+    else if (quantity.value == 1) {
+        if (upordown == 'up'){++quantity.value;}}
+    else
+        {quantity.value=1;}
+
+    next_search();
+    
+}
+
+/* Get the TOP position of a given element. */
+function getPositionTop(element){
+    var offset = 0;
+    while(element) {
+        offset += element["offsetTop"];
+        element = element.offsetParent;
+    }
+    return offset;
+}
+
+/* Is a given element is visible or not? */
+function isElementVisible(eltId) {
+    var elt = document.getElementById(eltId);
+    if (!elt) {
+       // Element not found.
+       console.log("Element not found. :" + eltId);
+       return false;
+    }
+    // Get the top and bottom position of the given element.
+    var posTop = getPositionTop(elt);
+    var posBottom = posTop + elt.offsetHeight;
+    // Get the top and bottom position of the *visible* part of the window.
+    //var visibleTop = document.body.scrollTop;
+    var visibleTop = document.getElementById('scrollArea').scrollTop;
+    var visibleBottom = visibleTop + document.getElementById('scrollArea').offsetHeight;
+    return ((posBottom >= visibleTop) && (posTop <= visibleBottom));
+}
+
+
+function id_check(id) {
+  //console.log("time out");
+   var idele = document.getElementById(id)
+   //console.dir(idele);
+   if (idele ) {
+    // console.log("exist element: " + id);
+      idele.scrollIntoView();
+     //           console.log(clusterize.getScrollProgress());
+
+   } else {
+
+     console.log("not exist element: " + id);
+
+   }
+
+   if (isElementVisible(id)) {
+     console.log("visible element: " + id);
+
+    } else {
+     console.log("not visible element: " + id);
+
+    }
+
+}
+
+function link_jump(id,row) {
+
+   //console.log("link_jump  : " + id);
+   //console.log("link_jump row : " + row.toString());
+   //console.log("link_jump step: " + (row * step_row).toString());
+
+   //document.getElementById('scrollArea').scrollTop = (row * step_row)-400;
+   //document.getElementById('scrollArea').scrollTop = ((row-30) * (step_row + 0.1));
+   //document.getElementById('scrollArea').scrollTop = (row+1) * (step_row ) -200;
+   document.getElementById('scrollArea').scrollTop = (row) * (step_row ) ;
+
+   setTimeout(id_check, 300, id);
+
+}
+
+
+    </script>
+
+    </body>
+</html>

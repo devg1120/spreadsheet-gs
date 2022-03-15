@@ -1,0 +1,1955 @@
+import os
+import sys
+import re
+import pprint
+import subprocess
+import shlex
+import shutil
+
+WHITE   = "\033[1;37m"  
+RED   = "\033[1;31m"  
+BLUE  = "\033[1;36m"
+YELLOW  = "\033[1;33m"
+GREEN = "\033[0;32m"
+RESET = "\033[0;0m"
+BOLD    = "\033[;1m"
+REVERSE = "\033[;7m"
+
+path1="../src"
+#path2="/home/gusa1120/x-spreadsheet/src"
+path2="../../x-spreadsheet/src"
+# traverse root directory, and list directories as dirs and files as files
+def dump1(filepath):
+    for root, dirs, files in os.walk(filepath):
+        path = root.split(os.sep)
+        print((len(path) - 1) * '---', os.path.basename(root))
+        for file in files:
+            print(len(path) * '---', file)
+    
+def dump2(filepath):
+    for root, dirs, files in os.walk(filepath):
+        print('root -------------')
+        print(root)
+        print('dirs -------------')
+        print(dirs)
+        print('files -------------')
+        print(files)
+
+def get(filepath):
+    dic = {}
+    for root, dirs, files in os.walk(filepath):
+        #root_p = re.sub('^' + filepath , '', root)
+        files2 = []
+        for file in files:
+            if file.endswith(".js"):
+                files2.append(file)
+        root_p = root.replace(filepath , '')
+        if root_p == '':
+            root_p = '/'
+
+        dic[root_p] = { 'root'  : root_p,
+                      'files' : files2,
+                      'dirs'  : dirs }
+    return dic
+
+def convlist(dic):
+    #filelist = ''
+    filelist = []
+    #sorted_dic = sorted(dic.items(), key=lambda x:x[0])
+    for element in dic:
+    #for element in sorted_dic:
+        #print('-------------------')
+        #pprint.pprint(dic[element])
+        #print('-------------------')
+        root = dic[element]['root']
+        for file in dic[element]['files']:
+            if root == '/':
+                #print(root + file)
+                str = root + file
+                #filelist += str + '\n'
+            else:
+                #print(root + '/' + file)
+                str = root + '/' + file
+                #filelist += str + '\n'
+                #filelist.append(str)
+            filelist.append( { 'path' : str, 'ignore' : False, 'other_exist' : False })
+
+    return filelist
+
+def sorted_convlist(dic):
+    #filelist = ''
+    filelist = []
+    sorted_list = sorted(dic.items(), key=lambda x:x[0])
+    #for element in dic:
+    for element in sorted_list:
+    #for element in sorted_dic:
+        #print('-------------------')
+        #pprint.pprint(dic[element])
+        #print('-------------------')
+        #pprint.pprint(element)
+        root = element[1]['root']
+
+        #pprint.pprint(element[1]['files'])
+        element[1]['files'].sort()
+        #pprint.pprint(element[1]['files'])
+
+
+        for file in element[1]['files']:
+        #for file in sorted_files:
+            if root == '/':
+                #print(root + file)
+                str = root + file
+                #filelist += str + '\n'
+            else:
+                #print(root + '/' + file)
+                str = root + '/' + file
+                #filelist += str + '\n'
+                #filelist.append(str)
+            filelist.append( { 'path' : str, 'ignore' : False, 'other_exist' : False })
+
+    return filelist
+
+def is_exist( path, list):
+    for element in list:
+        if element['path'] == path:
+            return True
+    return False
+
+
+def diffcheck(list1, list2 ):
+    for element in list1:
+        element['other_exist'] = is_exist(element['path'], list2)
+    for element in list2:
+        element['other_exist'] = is_exist(element['path'], list1)
+
+
+#dump2(path)
+
+dic1 = get(path1)
+#pprint.pprint(dic1)
+dic2 = get(path2)
+#pprint.pprint(dic2)
+
+
+#filelist1 = convlist(dic1)
+#filelist2 = convlist(dic2)
+
+filelist1 = sorted_convlist(dic1)
+filelist2 = sorted_convlist(dic2)
+
+#print('---------------')
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+#print('-------------------------------------------------------')
+
+diffcheck(filelist1, filelist2)
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+
+def diff(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print(path1 + element['path'] + '  ->  ' +  path2 + element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["diff", "-y", diff1 , diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            sys.stdout.buffer.write(res.stdout)
+            
+
+def coloreddiff_stdout(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print('')
+            print( REVERSE + WHITE + '  ' + path1 + element['path'] + '  ->  ' +  path2 + element['path'] + '  ' + RESET)
+            print('')
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["colordiff", "-y", diff1, diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+                if len(line2) > 62:
+                    c = line2[62]
+                    if c == '<':
+                        print(RED +line2[:-1] + RESET)
+                    elif c == '|':
+                        print(YELLOW + line2[:-1] + RESET)
+                    elif c == '>':
+                        print(BLUE + line2[:-1] + RESET)
+                    else:
+                        print(line2[:-1])
+                line = f.readline()
+            f.close()
+
+
+def coloreddiff_markdown(filelist, output_file):
+    of = open(output_file,'w')
+
+    for element in filelist:
+        if element['other_exist']:
+            of.write('\n')
+            of.write(  '##  ' + path1 + element['path'] + '  ->  ' +  path2 + element['path'] + '  ' )
+            of.write('\n')
+            of.write('```\n')
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["colordiff", "-y", diff1, diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+                if len(line2) > 62:
+                    c = line2[62]
+                    if c == '<':
+                        #print(RED +line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:red\">" +line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    elif c == '|':
+                        #print(YELLOW + line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:yellow\">" + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    elif c == '>':
+                        #print(BLUE + line2[:-1] + RESET)
+                        #of.write("<div> <span style=\"color:blue\">"  + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                    else:
+                        #print(line2[:-1])
+                        #of.write("<div> <span style=\"color:black\">" + line2[:-1] + "</span></div>\n")
+                        of.write( line2)
+                line = f.readline()
+            f.close()
+            of.write('```\n')
+    of.close()
+
+################################################################################################
+def icdiff_stdout(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print('')
+            print( REVERSE + WHITE + '  ' + path1 + element['path'] + '  ->  ' +  path2 + element['path'] + '  ' + RESET)
+            print('')
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            #command = ["colordiff", "-y", diff1, diff2]
+            command = ["./icdiff/icdiff", "-N", diff1, diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+#                line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+#                if len(line2) > 62:
+#                    c = line2[62]
+#                    if c == '<':
+#                        print(RED +line2[:-1] + RESET)
+#                    elif c == '|':
+#                        print(YELLOW + line2[:-1] + RESET)
+#                    elif c == '>':
+#                        print(BLUE + line2[:-1] + RESET)
+#                    else:
+#                        print(line2[:-1])
+                print(line[:-1])
+                line = f.readline()
+            f.close()
+
+def color_html(line):
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;30)*)m', "<font color=\"brak\">"   , line)
+    line3 = re.sub(r'\x1B\[([0-9]{1,2}(;31)*)m', "<font color=\"red\">"    , line2)
+    line4 = re.sub(r'\x1B\[([0-9]{1,2}(;32)*)m', "<font color=\"green\">"  , line3)
+    #line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"yellow\">" , line4)
+    line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"orange\">" , line4)
+    line6 = re.sub(r'\x1B\[([0-9]{1,2}(;34)*)m', "<font color=\"blue\">"   , line5)
+    line7 = re.sub(r'\x1B\[([0-9]{1,2}(;35)*)m', "<font color=\"mazen\">"  , line6)
+    line8 = re.sub(r'\x1B\[([0-9]{1,2}(;36)*)m', "<font color=\"cyan\">"   , line7)
+    #line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"white\">"  , line8)
+    line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"black\">"  , line8)
+    lineA = re.sub(r'\x1B\[m', "</font>", line9)
+    #print(lineA[:-1])
+    lineB = "<pre>" + lineA[:-1] + "</pre>"
+    return lineB
+
+
+def icdiff_html(filelist, output_file):
+
+    html_head="""
+<!DOCTYPE html>
+<html lang="jp" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <style>
+        pre {
+            font-size: 80%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+          }
+
+        body {
+            background-color: white
+            padding: 0px;
+            margin: 0px;
+
+        }
+    </style>
+</head>
+
+<body>
+"""
+
+    html_tail="""
+</body>
+</html>
+"""
+    of = open(output_file,'w')
+
+    of.write(html_head)
+    for element in filelist:
+        if element['other_exist']:
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            #command = ["colordiff", "-y", diff1, diff2]
+            #command = ["./icdiff/icdiff", "-N", "-cols = 200",diff1, diff2]
+            #res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            #subprocess.call(shlex.split(command_string))
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html(line)
+                #line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+                of.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+    of.write(html_tail)
+    of.close()
+
+def file_copy(in_file, out_file):
+    line = in_file.readline()
+    while line:
+        out_file.write(line)
+        line = in_file.readline()
+
+def icdiff_html_dashboard(filelist, output_file, template_file):
+
+    style = """
+    <style>
+        pre {
+            overflow: visible;
+            font-size: 80%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+          }
+
+    </style>
+
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    file_count = 0
+    #of.write(html_head)
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            if file_count > 7:
+                break
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li>\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            file_copy(F_CONTENT, F_OUTPUT)
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+
+
+def color_html2(line):
+    #lineA = re.sub(r'\<', "\\<"   , line) 
+    lineA = re.sub(r'\<', "&lt;"   , line) 
+    #lineB = re.sub(r'\>', "\\>"   , lineA)
+    lineB = re.sub(r'\>', "&gt;"   , lineA)
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;30)*)m', "<font color=\"brak\">"   , lineB)
+    line3 = re.sub(r'\x1B\[([0-9]{1,2}(;31)*)m', "<font color=\"red\">"    , line2)
+    line4 = re.sub(r'\x1B\[([0-9]{1,2}(;32)*)m', "<font color=\"green\">"  , line3)
+    #line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"yellow\">" , line4)
+    line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"orange\">" , line4)
+    line6 = re.sub(r'\x1B\[([0-9]{1,2}(;34)*)m', "<font color=\"blue\">"   , line5)
+    line7 = re.sub(r'\x1B\[([0-9]{1,2}(;35)*)m', "<font color=\"mazen\">"  , line6)
+    line8 = re.sub(r'\x1B\[([0-9]{1,2}(;36)*)m', "<font color=\"cyan\">"   , line7)
+    #line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"white\">"  , line8)
+    line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"black\">"  , line8)
+    lineA = re.sub(r'\x1B\[m', "</font>", line9)
+    #print(lineA[:-1])
+    #lineB = "<div><pre><code>" + lineA[:-1] + "</code></pre></div>"
+    lineB = "<div><pre>" + lineA[:-1] + "</pre></div>"
+    return lineB
+
+def icdiff_html_dashboard2(filelist, output_file, template_file):
+
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+    /* max-height: 600px;*/
+     max-height: 85vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+
+}
+
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+
+}
+
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+        pre {
+            overflow: visible;
+            font-size: 80%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-family: 'MS Gothic', monospace;
+          }
+
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li>\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                F_CONTENT.write( "<div><pre>" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html2(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<div id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+#aaaaa
+def icdiff_html_dashboard2_dataproxy(filelist, output_file, template_file):
+
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+    /* max-height: 600px;*/
+     max-height: 85vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+        pre {
+            overflow: visible;
+            font-size: 100%;
+            font-weight:  bold;
+            width: 100%;
+            border-radius: 0;
+            background-color: white;
+            border-top: 0;
+            //border-bottom: 0.01px dotted gray;
+            border-bottom: 0.01px dotted #D3D3D3;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            //font-family: 'MS Gothic', monospace;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li class=\"filelist\" >\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                F_CONTENT.write( "<div><pre>" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html2(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<div id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            #file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("<div class=\"clusterize-no-data\">Loading data…</div>\n")
+
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+    # output_file
+    dirname = os.path.dirname(output_file)
+    print("path: " +dirname)
+    shutil.copyfile('/tmp/content_data',dirname + '/' + 'content_data.html')
+
+
+
+def color_html4(line, row_count):
+    #lineA = re.sub(r'\<', "\\<"   , line) 
+    lineA = re.sub(r'\<', "&lt;"   , line) 
+    #lineB = re.sub(r'\>', "\\>"   , lineA)
+    lineB = re.sub(r'\>', "&gt;"   , lineA)
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;30)*)m', "<font color=\"brak\">"   , lineB)
+    line3 = re.sub(r'\x1B\[([0-9]{1,2}(;31)*)m', "<font color=\"red\">"    , line2)
+    line4 = re.sub(r'\x1B\[([0-9]{1,2}(;32)*)m', "<font color=\"green\">"  , line3)
+    #line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"yellow\">" , line4)
+    line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"orange\">" , line4)
+    line6 = re.sub(r'\x1B\[([0-9]{1,2}(;34)*)m', "<font color=\"blue\">"   , line5)
+    line7 = re.sub(r'\x1B\[([0-9]{1,2}(;35)*)m', "<font color=\"mazen\">"  , line6)
+    line8 = re.sub(r'\x1B\[([0-9]{1,2}(;36)*)m', "<font color=\"cyan\">"   , line7)
+    #line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"white\">"  , line8)
+    line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"black\">"  , line8)
+    lineA = re.sub(r'\x1B\[m', "</font>", line9)
+    #print(lineA[:-1])
+    #lineB = "<div><pre><code>" + lineA[:-1] + "</code></pre></div>"
+    #lineB = "<div><pre>" + lineA[:-1] + "</pre></div>"
+    #lineB = "<div><pre row=\"" + str(row_count)  + "\">" + lineA[:-1] + "</pre></div>"
+
+    #lineB = "<div><pre row=\"" + str(row_count)  + "\">" + str(row_count).zfill(4) +" " +  lineA[:-1] + "</pre></div>"
+    lineB = "<div row=\"" + str(row_count) + "\"><pre row=\"" + str(row_count)  + "\">" + str(row_count).zfill(4) +" " +  lineA[:-1] + "</pre></div>"
+    return lineB
+
+def icdiff_html_dashboard2_dataproxy_scrolltop(filelist, output_file, template_file):
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+    /* max-height: 600px;*/
+     max-height: 85vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+
+.pagehead {
+
+            background-color: #00ccff;
+
+}
+        pre {
+            overflow: visible;
+            //font-size: 13px;
+            font-size: 100%;
+            /*font-weight:  bold;*/
+            width: 100%;
+            background-color: white;
+            border-top: 0;
+            border-bottom: 0.01px dotted gray;
+            border-radius: 0;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            //font-family: 'MS Gothic', monospace;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    row_count =1
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = 'id' + element['path'].replace('/', '-').replace('.', '_')
+            MENU_ID = "menu_" + ID;
+
+            #F_MENU.write("\n<li class=\"filelist\" >\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+            #          + element['path'] + "</a>\n</li>\n")
+
+            #F_MENU.write("\n<li class=\"filelist\" >\n   <a href=\"#\" onclick=\"link_jump(" + str(row_count) + "); return false;\" ><i class=\"fa fa-files-o fa-fw\"></i>"
+            F_MENU.write("\n<li id=\"" + MENU_ID + "\" class=\"filelist\" >\n   <a href=\"#\" onclick=\"link_jump(" + "'"+ ID + "'" + ","+ str(row_count) + "); return false;\" ><i class=\"fa   \"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\"></div>\n")
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\">"+ID+"</div>\n")
+            F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\"><pre class=\"pagehead\"" " row=\"" + str(row_count)  + "\">"
+                    + str(row_count).zfill(4) +" "   +ID+"</pre></div>\n")
+
+            row_count =  row_count + 1
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                #F_CONTENT.write( "<div><pre>" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                #F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+
+                #F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + str(row_count).zfill(4) +" " +   diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                row_count =  row_count + 1
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html4(line, row_count)
+                F_CONTENT.write( line2 + '\n')
+                #F_CONTENT.write( line2 )
+                row_count =  row_count + 1
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<div id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            #file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("<div class=\"clusterize-no-data\">Loading data…</div>\n")
+
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+    # output_file
+    dirname = os.path.dirname(output_file)
+    print("path: " +dirname)
+    shutil.copyfile('/tmp/content_data',dirname + '/' + 'content_data.html')
+
+def icdiff_html_dashboard2_dataproxy_scrolltop_split(filelist, output_file, template_file):
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+
+#splitBase {
+     max-height: 80vh;
+
+}
+
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+     max-height: 80vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+
+.split {
+     -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     box-sizing: border-box;
+     overflow-y: auto;
+     overflow-x: hidden;
+ }
+.pagehead {
+
+            background-color: #00ccff;
+
+}
+        pre {
+            overflow: visible;
+            //font-size: 13px;
+            font-size: 100%;
+            /*font-weight:  bold;*/
+            width: 100%;
+            background-color: white;
+            border-top: 0;
+            border-bottom: 0.01px dotted gray;
+            border-radius: 0;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            //font-family: 'MS Gothic', monospace;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    row_count =1
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = 'id' + element['path'].replace('/', '-').replace('.', '_')
+            MENU_ID = "menu_" + ID;
+
+            #F_MENU.write("\n<li class=\"filelist\" >\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+            #          + element['path'] + "</a>\n</li>\n")
+
+            #F_MENU.write("\n<li class=\"filelist\" >\n   <a href=\"#\" onclick=\"link_jump(" + str(row_count) + "); return false;\" ><i class=\"fa fa-files-o fa-fw\"></i>"
+            F_MENU.write("\n<li id=\"" + MENU_ID + "\" class=\"filelist\" >\n   <a href=\"#\" onclick=\"link_jump(" + "'"+ ID + "'" + ","+ str(row_count) + "); return false;\" ><i class=\"fa   \"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\"></div>\n")
+            #F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\">"+ID+"</div>\n")
+            F_CONTENT.write("<div id=\"" +  ID + "\"  class=\"pagelink\"" + " row=\"" + str(row_count)  + "\"><pre class=\"pagehead\"" " row=\"" + str(row_count)  + "\">"
+                    + str(row_count).zfill(4) +" "   +ID+"</pre></div>\n")
+
+            row_count =  row_count + 1
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                #F_CONTENT.write( "<div><pre>" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                #F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+
+                #F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                #F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\">" + str(row_count).zfill(4) +" " +   diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                F_CONTENT.write( "<div><pre"  + " row=\"" + str(row_count)  + "\"><code =class\"javascript\">" + str(row_count).zfill(4) +" " +   diff1 + "             " + diff2 +  "</code></pre></div>" + '\n')
+                row_count =  row_count + 1
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html4(line, row_count)
+                F_CONTENT.write( line2 + '\n')
+                #F_CONTENT.write( line2 )
+                row_count =  row_count + 1
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            #F_OUTPUT.write("<div class=\"horizontally_divided\"l >\n")
+
+           # F_OUTPUT.write("<div id=\"splitBase\" >\n")
+
+            #F_OUTPUT.write("<div id=\"splitView1\" class=\"split content\" >\n")
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll split content\">\n")
+            F_OUTPUT.write("<div id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            F_OUTPUT.write("<div class=\"clusterize-no-data\">Loading data…</div>\n")
+
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #F_OUTPUT.write("</div>\n")
+
+            #F_OUTPUT.write("<div id=\"splitView2\" class=\"split content\" >\n")
+            F_OUTPUT.write("<div id=\"scrollArea2\" class=\"clusterize-scroll split content\">\n")
+            F_OUTPUT.write("<div id=\"contentArea2\" class=\"clusterize-content\">\n")
+
+            F_OUTPUT.write("<div class=\"clusterize-no-data\"></div>\n")
+
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #F_OUTPUT.write("</div>\n")
+
+
+            #F_OUTPUT.write("</div>\n")  # splitBase
+
+            #F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+    # output_file
+    dirname = os.path.dirname(output_file)
+    print("path: " +dirname)
+    shutil.copyfile('/tmp/content_data',dirname + '/' + 'content_data.html')
+
+
+
+def icdiff_html_dashboard2_dataproxy_table(filelist, output_file, template_file):
+
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+    /* max-height: 600px;*/
+     max-height: 85vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+        pre {
+            overflow: visible;
+            font-size: 90%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 0.1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-family: 'MS Gothic', monospace;
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li>\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<tr id=\"" +  ID + "\"  class=\"pagelink\"></tr>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                F_CONTENT.write( "<tr><pre>" + diff1 + "             " + diff2 +  "</pre></tr>" + '\n')
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                #line2 = color_html2(line)
+                line2 = color_html3(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<table>\n")
+            F_OUTPUT.write("<tbody id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            #file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("<tr class=\"clusterize-no-data\">\n")
+            F_OUTPUT.write("<td>Loading data…</td>\n")
+            F_OUTPUT.write("</tr>\n")
+            F_OUTPUT.write("</tbody>\n")
+            F_OUTPUT.write("</table>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+    # output_file
+    dirname = os.path.dirname(output_file)
+    print("path: " +dirname)
+    shutil.copyfile('/tmp/content_data',dirname + '/' + 'content_data.html')
+
+def icdiff_html_dashboard2_dataproxy(filelist, output_file, template_file):
+
+    style = """
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+    /* max-height: 600px;*/
+     max-height: 85vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+        pre {
+            overflow: visible;
+            font-size: 90%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 0.1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-family: 'MS Gothic', monospace;
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li>\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))
+            if len(res.stdout) == 0:
+                F_CONTENT.write( "<div><pre>" + diff1 + "             " + diff2 +  "</pre></div>" + '\n')
+                continue
+
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html2(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<div id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            #file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("<div class=\"clusterize-no-data\">Loading data…</div>\n")
+
+            F_OUTPUT.write("</div>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+
+    # output_file
+    dirname = os.path.dirname(output_file)
+    print("path: " +dirname)
+    shutil.copyfile('/tmp/content_data',dirname + '/' + 'content_data.html')
+
+def color_html3(line):
+    #lineA = re.sub(r'\<', "\\<"   , line)                                                                        
+    lineA = re.sub(r'\<', "&lt;"   , line)                                                                        
+    #lineB = re.sub(r'\>', "\\>"   , lineA)                                                                       
+    lineB = re.sub(r'\>', "&gt;"   , lineA)  
+
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;30)*)m', "<font color=\"brak\">"   , lineB)
+    line3 = re.sub(r'\x1B\[([0-9]{1,2}(;31)*)m', "<font color=\"red\">"    , line2)
+    line4 = re.sub(r'\x1B\[([0-9]{1,2}(;32)*)m', "<font color=\"green\">"  , line3)
+    #line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"yellow\">" , line4)
+    line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"orange\">" , line4)
+    line6 = re.sub(r'\x1B\[([0-9]{1,2}(;34)*)m', "<font color=\"blue\">"   , line5)
+    line7 = re.sub(r'\x1B\[([0-9]{1,2}(;35)*)m', "<font color=\"mazen\">"  , line6)
+    line8 = re.sub(r'\x1B\[([0-9]{1,2}(;36)*)m', "<font color=\"cyan\">"   , line7)
+    #line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"white\">"  , line8)
+    line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"black\">"  , line8)
+    lineA = re.sub(r'\x1B\[m', "</font>", line9)
+    #print(lineA[:-1])
+    #lineB = "<tr><td><pre>" + lineA[:-1] + "</pre></td></tr>"
+    lineB = "<tr><pre>" + lineA[:-1] + "</pre></tr>"
+    return lineB
+
+def icdiff_html_dashboard3(filelist, output_file, template_file):
+
+    style = """
+    <style>
+
+      .clusterize-scroll{
+    /*position: absolute;*/
+/*    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 10;*/
+    max-height: none; /* <-- important one  */
+
+}
+
+        pre {
+            overflow: visible;
+            font-size: 80%;
+            font-weight:  bold;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+          }
+
+    </style>
+
+    """
+
+    F_CONTENT = open('/tmp/content_data','w')
+    F_MENU    = open('/tmp/menu_data','w')
+
+    print(len(filelist))
+    file_count = 0
+    for element in filelist:
+        if element['other_exist']:
+            file_count = file_count + 1
+            #if file_count > 45:
+            #    break
+            print(element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+
+            ID = element['path'].replace('/', '-').replace('.', '_')
+
+            F_MENU.write("\n<li>\n   <a href=\"#" +  ID + "\"><i class=\"fa fa-files-o fa-fw\"></i>"
+                      + element['path'] + "</a>\n</li>\n")
+
+            F_CONTENT.write("\n<div id=\"" +  ID + "\"  class=\"pagelink\"></div>\n")
+
+            CommandStringBase = "./icdiff/icdiff -N --cols=230 {0} {1}"
+            command_string = CommandStringBase.format(diff1, diff2)
+            res = subprocess.run(shlex.split(command_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            #print("DIFF: " + str(len(res.stdout)))                                                           
+            if len(res.stdout) == 0:                                                                          
+                F_CONTENT.write( "<tr><td><pre>" + diff1 + "             " + diff2 +  "</pre></td></tr>" + '\n')     
+                continue   
+
+            f = open("/tmp/tmp.txt", "wb")
+            f.write(res.stdout)
+            f.close()
+            f = open("/tmp/tmp.txt", "r")
+            line = f.readline()
+            while line:
+                line2 = color_html3(line)
+                F_CONTENT.write( line2 + '\n')
+                line = f.readline()
+            f.close()
+            #F_CONTENT.write("\n</div>\n")
+    F_CONTENT.close()
+    F_MENU.close()
+
+
+    F_CONTENT  = open('/tmp/content_data','r')
+    F_MENU     = open('/tmp/menu_data','r')
+    F_TEMPLATE = open(template_file,'r')
+    F_OUTPUT   = open(output_file,'w')
+
+    line = F_TEMPLATE.readline()
+    STATE = 1
+    while line:
+        #print(line)
+        m0 = re.match(r"^.*\</head\>.*$", line)
+        if m0:
+            print("add style")
+            F_OUTPUT.write(style)
+            
+        m1 = re.match(r"^\<!--SIDE_MENU_START--\>", line)
+        if m1:
+            STATE = 2
+            print("SIDE MENU START")
+            F_OUTPUT.write(line)
+            file_copy(F_MENU, F_OUTPUT)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m2 = re.match(r"^\<!--SIDE_MENU_END--\>", line)
+        if m2:
+            STATE = 3
+            print("SIDE MENU END")
+            #F_OUTPUT.write(line)
+            #line = F_TEMPLATE.readline()
+            #continue
+        m3 = re.match(r"^\<!--CONTENT_START--\>", line)
+        if m3:
+            STATE = 4
+            print("CONTENT START")
+            F_OUTPUT.write(line)
+            F_OUTPUT.write("<div id=\"scrollArea\" class=\"clusterize-scroll\">\n")
+            F_OUTPUT.write("<table>\n")
+            F_OUTPUT.write("<tbody id=\"contentArea\" class=\"clusterize-content\">\n")
+
+            file_copy(F_CONTENT, F_OUTPUT)
+            F_OUTPUT.write("</tbody>\n")
+            F_OUTPUT.write("</table>\n")
+            F_OUTPUT.write("</div>\n")
+            #continue
+        m4 = re.match(r"^\<!--CONTENT_END--\>", line)
+        if m4:
+            STATE = 5
+            print("CONTENT END")
+            #F_OUTPUT.write(line)
+            #continue
+
+        if   STATE == 1:
+            F_OUTPUT.write(line)
+        elif STATE == 2:
+            pass
+        elif STATE == 3:
+            F_OUTPUT.write(line)
+        elif STATE == 4:
+            pass
+        elif STATE == 5:
+            F_OUTPUT.write(line)
+        else:
+             print("Error")
+        line = F_TEMPLATE.readline()
+
+    F_TEMPLATE.close()
+    F_OUTPUT.close()
+    F_MENU.close()
+    F_CONTENT.close()
+################################################################################################
+
+#diff(filelist1)
+#coloreddiff_stdout(filelist1)
+#coloreddiff_markdown(filelist1, "TEST.md")
+
+#icdiff_stdout(filelist1)
+#icdiff_html(filelist1, 'doc_root/index.html')
+
+#icdiff_html_dashboard(filelist1, './template/pages/index.html' , './template/pages/index.template') 
+
+# div
+#icdiff_html_dashboard2(filelist1, './template/pages/index.html' , './template/pages/index.template2') 
+#icdiff_html_dashboard2_dataproxy(filelist1, './template/pages/index.html' , './template/pages/index.template2_dataproxy') 
+#icdiff_html_dashboard2_dataproxy_scrolltop(filelist1, './template/pages/index.html' , './template/pages/index.template2_dataproxy_scrolltop') 
+icdiff_html_dashboard2_dataproxy_scrolltop_split(filelist1, './template/pages/index.html' , './template/pages/index.template2_dataproxy_scrolltop_split') 
+
+#icdiff_html_dashboard2_dataproxy_table(filelist1, './template/pages/index.html' , './template/pages/index.template2_dataproxy_table') 
+
+# table
+#icdiff_html_dashboard3(filelist1, './template/pages/index.html' , './template/pages/index.template2') 
+
+##########################################################################################
+html_head="""
+<!DOCTYPE html>
+<html lang="jp" dir="ltr">
+ 
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <style>
+        pre {
+            font-size: 80%;
+            background-color: white;
+            border: 0.1px dotted gray;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+          }
+
+        body {
+            background-color: white
+            padding: 0px;
+            margin: 0px;
+
+        }
+    </style>
+</head>
+ 
+<body>
+"""
+
+html_tail="""
+</body>
+</html>
+"""
+
+
+###
+command = ["./icdiff/icdiff", "-N", "AAA.txt", "BBB.txt"]
+#command = ["colordiff", "-y", "AAA.txt", "BBB.txt"]
+#command = ["diff", "-y", "AAA.txt", "BBB.txt"]
+res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#sys.stdout.buffer.write(res.stdout)
+f = open("tmp.txt", "wb")
+f.write(res.stdout)
+f.close()
+
+f = open("tmp.txt", "r")
+w = open("index.html", "w")
+line = f.readline()
+ 
+w.write(html_head)
+
+while line:
+
+    #m = re.search(r'(.*)\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m(.*)\x1B\[m(.*)', line)
+#    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+#
+#    #print(str(len(line)))
+#    #print(str(len(line2)))
+#    #print(str(list(line)))
+#    #print(str(list(line2)))
+#
+#    #print(line[:-1])
+#    #print(line2[:-1])
+#
+#    if len(line2) > 62:
+#        #print("["+line2[62] + "]")
+#        c = line2[62]
+#        if c == '<':
+#              print(RED +line2[:-1] + RESET)
+#        elif c == '|':
+#              print(YELLOW + line2[:-1] + RESET)
+#        elif c == '>':
+#              print(BLUE + line2[:-1] + RESET)
+#        else:
+#              print(line2[:-1])
+
+    #print("____")
+    print(line[:-1])
+    #print("____")
+    #pprint.pprint(line[:-1])
+    #print("****")
+    #m = re.search(r'(.*)\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m(.*)\x1B\[m(.*)', line[:-1])
+    #m = re.match(r'\x1b\[0;37m(.*)\x1b\[m', line[:-1])
+    #m = re.match(r'\x1b\[0;37m(.*)\x1b\[m', line[:-1])
+    #if m:
+    #   print(m.groups(0))
+    #   print(m.groups(1))
+#    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m', "", line)
+    #line2 = re.sub(r'\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)m', "<color>", line)
+
+    line2 = re.sub(r'\x1B\[([0-9]{1,2}(;30)*)m', "<font color=\"brak\">"   , line)
+    line3 = re.sub(r'\x1B\[([0-9]{1,2}(;31)*)m', "<font color=\"red\">"    , line2)
+    line4 = re.sub(r'\x1B\[([0-9]{1,2}(;32)*)m', "<font color=\"green\">"  , line3)
+    line5 = re.sub(r'\x1B\[([0-9]{1,2}(;33)*)m', "<font color=\"yellow\">" , line4)
+    line6 = re.sub(r'\x1B\[([0-9]{1,2}(;34)*)m', "<font color=\"blue\">"   , line5)
+    line7 = re.sub(r'\x1B\[([0-9]{1,2}(;35)*)m', "<font color=\"mazen\">"  , line6)
+    line8 = re.sub(r'\x1B\[([0-9]{1,2}(;36)*)m', "<font color=\"cyan\">"   , line7)
+    #line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"white\">"  , line8)
+    line9 = re.sub(r'\x1B\[([0-9]{1,2}(;37)*)m', "<font color=\"black\">"  , line8)
+    lineA = re.sub(r'\x1B\[m', "</font>", line9)
+    #print(lineA[:-1])
+    w.write("<pre>" + lineA[:-1] + "</pre>\n")
+    line = f.readline()
+
+f.close()
+w.write(html_tail)

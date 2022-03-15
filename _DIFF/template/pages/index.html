@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Startmin - Bootstrap Admin Theme</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        
+        <link href="../css/metisMenu.min.css" rel="stylesheet">
+        
+
+        <!-- Timeline CSS -->
+        <!--
+        <link href="../css/timeline.css" rel="stylesheet">
+        -->
+
+        <!-- Custom CSS -->
+        <link href="../css/startmin.css" rel="stylesheet">
+        <!--
+        <link href="../css/clusterize.css" rel="stylesheet">
+        -->
+
+        <!-- Morris Charts CSS -->
+        <!--
+        <link href="../css/morris.css" rel="stylesheet">
+        -->
+
+        <!-- Custom Fonts -->
+        <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!--
+        <script src="https://unpkg.com/clusterize.js@0.18.0/clusterize.min.js"></script>
+	-->
+        <script src="../js/clusterize.min.js"></script>
+        
+	<!--
+        <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+	-->
+
+        <script src="../split/packages/splitjs/dist/split.js"></script>
+
+<!--
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+-->
+        
+<style>
+
+        .split {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .content {
+            border: 1px solid #C0C0C0;
+            box-shadow: inset 0 1px 2px #e4e4e4;
+            background-color: #fff;
+        }
+
+        .gutter {
+            background-color: transparent;
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+
+        .gutter.gutter-horizontal {
+            cursor: col-resize;
+            background-image: url('../grips/vertical.png');
+        }
+
+        .gutter.gutter-vertical {
+            cursor: row-resize;
+            background-image: url('../grips/horizontal.png');
+        }
+
+        .split.split-horizontal,
+        .gutter.gutter-horizontal {
+            height: 100%;
+            float: left;
+        }
+    </style>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <style>
+/*
+    html {
+  scroll-behavior: smooth;
+}
+*/
+
+#splitBase {
+     max-height: 80vh;
+
+}
+
+.clusterize-scroll{
+ /*scroll-snap-type:  block;*/
+  /*scroll-behavior: smooth;*/
+    /* max-height: none;*/ /* <-- important one  */
+     max-height: 80vh;
+   /* max-height: 80%;*/
+     max-width: 100%; 
+     overflow: auto;
+}
+#wrapper.toggled .clusterize-scroll {
+/*
+    position: absolute;
+     max-width: 70%;
+     */
+  position: relative;
+  /*left: 250px;*/
+  max-width: calc(100% - 250px);
+  max-width: -moz-calc(100% - 250px);
+  max-width: -webkit-calc(100% - 250px); 
+}
+/*
+#contentArea.clusterize-content > div{ display:inline-block; }
+*/
+
+.split {
+     -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     box-sizing: border-box;
+     overflow-y: auto;
+     overflow-x: hidden;
+ }
+.pagehead {
+
+            background-color: #00ccff;
+
+}
+        pre {
+            overflow: visible;
+            //font-size: 13px;
+            font-size: 100%;
+            /*font-weight:  bold;*/
+            width: 100%;
+            background-color: white;
+            border-top: 0;
+            border-bottom: 0.01px dotted gray;
+            border-radius: 0;
+            padding: 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            //font-family: 'MS Gothic', monospace;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+          }
+        code {
+            padding: 0px;
+            margin: 0px;
+          }      
+    </style>
+        </head>
+    <body>
+
+        <div id="wrapper" class="toggled">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Startmin</a>
+                </div>
+<!--
+               <button type="button" class="btn btn-default menu-toggle">
+	           <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+	        </button>
+-->
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <li><a href="#"><i class="fa fa-home fa-fw"></i> Website</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <button type="button" class="menu-toggle">
+                        <span class="glyphicon glyphicon glyphicon-align-justify" ></span>
+                    </button>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-left navbar-top-links">
+                    <div>
+                        <input type="text"  id="search" class="navbar-serch-input"  size="30"  placeholder="Search...">
+                                        <button  type="button" id="search-button" >
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button  type="button" id="search-reset" >
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+<!--
+                                        <div class="order-option">
+                                             Quantity:
+-->
+                                             <span id="quantity-field">
+                                                 <button id="up">+</button>
+                                                 <input type="text" id="quantity" value="" size="3"
+                                                      style="margin-right:0px; padding-right:1px;border:none; text-align:right;"
+                                                  >
+                                                 <input type="text" id="quantity_base" value="/" size="3"
+                                                      style="margin-left:-4px; padding-left:2px;border:none;"
+                                                      readonly
+                                                  >
+                                                 <button id="down">-</button>
+                                             </span>
+                                        <button  type="button" id="split-view" >
+                                            <i class="fa fa-window-restore "></i>
+                                        </button>
+<!--
+                                        </div>
+-->
+                    </div>
+                </ul>
+
+
+                <ul class="nav navbar-right navbar-top-links">
+                    <li class="dropdown navbar-inverse">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell fa-fw"></i> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-comment fa-fw"></i> New Comment
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-tasks fa-fw"></i> New Task
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i> secondtruth <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /.navbar-top-links -->
+
+		<div  id="sidebar-wrapper">
+		<div  class="navbar-default sidebar  navbar-left" role="navigation">
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+				<!--
+                            <li class="sidebar-search">
+                                <div class="input-group custom-search-form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                </span>
+                                </div>
+                            </li>
+			    -->
+
+<!--SIDE_MENU_START-->
+
+<li id="menu_id-config_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-config_js',1); return false;" ><i class="fa   "></i>/config.js</a>
+</li>
+
+<li id="menu_id-index_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-index_js',3); return false;" ><i class="fa   "></i>/index.js</a>
+</li>
+
+<li id="menu_id-algorithm-bitmap_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-algorithm-bitmap_js',164); return false;" ><i class="fa   "></i>/algorithm/bitmap.js</a>
+</li>
+
+<li id="menu_id-algorithm-expression_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-algorithm-expression_js',166); return false;" ><i class="fa   "></i>/algorithm/expression.js</a>
+</li>
+
+<li id="menu_id-canvas-draw_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-canvas-draw_js',168); return false;" ><i class="fa   "></i>/canvas/draw.js</a>
+</li>
+
+<li id="menu_id-canvas-draw2_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-canvas-draw2_js',368); return false;" ><i class="fa   "></i>/canvas/draw2.js</a>
+</li>
+
+<li id="menu_id-component-border_palette_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-border_palette_js',370); return false;" ><i class="fa   "></i>/component/border_palette.js</a>
+</li>
+
+<li id="menu_id-component-bottombar_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-bottombar_js',372); return false;" ><i class="fa   "></i>/component/bottombar.js</a>
+</li>
+
+<li id="menu_id-component-button_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-button_js',543); return false;" ><i class="fa   "></i>/component/button.js</a>
+</li>
+
+<li id="menu_id-component-calendar_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-calendar_js',545); return false;" ><i class="fa   "></i>/component/calendar.js</a>
+</li>
+
+<li id="menu_id-component-color_palette_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-color_palette_js',547); return false;" ><i class="fa   "></i>/component/color_palette.js</a>
+</li>
+
+<li id="menu_id-component-contextmenu_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-contextmenu_js',549); return false;" ><i class="fa   "></i>/component/contextmenu.js</a>
+</li>
+
+<li id="menu_id-component-datepicker_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-datepicker_js',629); return false;" ><i class="fa   "></i>/component/datepicker.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_js',631); return false;" ><i class="fa   "></i>/component/dropdown.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_align_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_align_js',673); return false;" ><i class="fa   "></i>/component/dropdown_align.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_border_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_border_js',675); return false;" ><i class="fa   "></i>/component/dropdown_border.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_color_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_color_js',677); return false;" ><i class="fa   "></i>/component/dropdown_color.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_font_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_font_js',679); return false;" ><i class="fa   "></i>/component/dropdown_font.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_fontsize_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_fontsize_js',681); return false;" ><i class="fa   "></i>/component/dropdown_fontsize.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_format_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_format_js',683); return false;" ><i class="fa   "></i>/component/dropdown_format.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_formula_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_formula_js',696); return false;" ><i class="fa   "></i>/component/dropdown_formula.js</a>
+</li>
+
+<li id="menu_id-component-dropdown_linetype_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-dropdown_linetype_js',698); return false;" ><i class="fa   "></i>/component/dropdown_linetype.js</a>
+</li>
+
+<li id="menu_id-component-editor_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-editor_js',700); return false;" ><i class="fa   "></i>/component/editor.js</a>
+</li>
+
+<li id="menu_id-component-element_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-element_js',936); return false;" ><i class="fa   "></i>/component/element.js</a>
+</li>
+
+<li id="menu_id-component-event_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-event_js',986); return false;" ><i class="fa   "></i>/component/event.js</a>
+</li>
+
+<li id="menu_id-component-form_field_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-form_field_js',988); return false;" ><i class="fa   "></i>/component/form_field.js</a>
+</li>
+
+<li id="menu_id-component-form_input_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-form_input_js',990); return false;" ><i class="fa   "></i>/component/form_input.js</a>
+</li>
+
+<li id="menu_id-component-form_select_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-form_select_js',1008); return false;" ><i class="fa   "></i>/component/form_select.js</a>
+</li>
+
+<li id="menu_id-component-icon_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-icon_js',1010); return false;" ><i class="fa   "></i>/component/icon.js</a>
+</li>
+
+<li id="menu_id-component-message_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-message_js',1012); return false;" ><i class="fa   "></i>/component/message.js</a>
+</li>
+
+<li id="menu_id-component-modal_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-modal_js',1014); return false;" ><i class="fa   "></i>/component/modal.js</a>
+</li>
+
+<li id="menu_id-component-modal_validation_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-modal_validation_js',1016); return false;" ><i class="fa   "></i>/component/modal_validation.js</a>
+</li>
+
+<li id="menu_id-component-resizer_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-resizer_js',1018); return false;" ><i class="fa   "></i>/component/resizer.js</a>
+</li>
+
+<li id="menu_id-component-scrollbar_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-scrollbar_js',1088); return false;" ><i class="fa   "></i>/component/scrollbar.js</a>
+</li>
+
+<li id="menu_id-component-selector_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-selector_js',1102); return false;" ><i class="fa   "></i>/component/selector.js</a>
+</li>
+
+<li id="menu_id-component-sheet_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-sheet_js',1192); return false;" ><i class="fa   "></i>/component/sheet.js</a>
+</li>
+
+<li id="menu_id-component-sort_filter_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-sort_filter_js',1886); return false;" ><i class="fa   "></i>/component/sort_filter.js</a>
+</li>
+
+<li id="menu_id-component-suggest_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-suggest_js',1888); return false;" ><i class="fa   "></i>/component/suggest.js</a>
+</li>
+
+<li id="menu_id-component-table_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-table_js',1890); return false;" ><i class="fa   "></i>/component/table.js</a>
+</li>
+
+<li id="menu_id-component-toolbar_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-toolbar_js',2072); return false;" ><i class="fa   "></i>/component/toolbar.js</a>
+</li>
+
+<li id="menu_id-component-tooltip_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-component-tooltip_js',2100); return false;" ><i class="fa   "></i>/component/tooltip.js</a>
+</li>
+
+<li id="menu_id-core-alphabet_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-alphabet_js',2102); return false;" ><i class="fa   "></i>/core/alphabet.js</a>
+</li>
+
+<li id="menu_id-core-auto_filter_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-auto_filter_js',2194); return false;" ><i class="fa   "></i>/core/auto_filter.js</a>
+</li>
+
+<li id="menu_id-core-cell_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-cell_js',2196); return false;" ><i class="fa   "></i>/core/cell.js</a>
+</li>
+
+<li id="menu_id-core-cell_range_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-cell_range_js',2297); return false;" ><i class="fa   "></i>/core/cell_range.js</a>
+</li>
+
+<li id="menu_id-core-clipboard_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-clipboard_js',2299); return false;" ><i class="fa   "></i>/core/clipboard.js</a>
+</li>
+
+<li id="menu_id-core-col_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-col_js',2301); return false;" ><i class="fa   "></i>/core/col.js</a>
+</li>
+
+<li id="menu_id-core-data_proxy_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-data_proxy_js',2364); return false;" ><i class="fa   "></i>/core/data_proxy.js</a>
+</li>
+
+<li id="menu_id-core-font_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-font_js',2875); return false;" ><i class="fa   "></i>/core/font.js</a>
+</li>
+
+<li id="menu_id-core-format_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-format_js',2939); return false;" ><i class="fa   "></i>/core/format.js</a>
+</li>
+
+<li id="menu_id-core-formula_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-formula_js',2970); return false;" ><i class="fa   "></i>/core/formula.js</a>
+</li>
+
+<li id="menu_id-core-helper_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-helper_js',3038); return false;" ><i class="fa   "></i>/core/helper.js</a>
+</li>
+
+<li id="menu_id-core-history_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-history_js',3040); return false;" ><i class="fa   "></i>/core/history.js</a>
+</li>
+
+<li id="menu_id-core-merge_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-merge_js',3053); return false;" ><i class="fa   "></i>/core/merge.js</a>
+</li>
+
+<li id="menu_id-core-row_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-row_js',3055); return false;" ><i class="fa   "></i>/core/row.js</a>
+</li>
+
+<li id="menu_id-core-scroll_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-scroll_js',3210); return false;" ><i class="fa   "></i>/core/scroll.js</a>
+</li>
+
+<li id="menu_id-core-selector_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-selector_js',3212); return false;" ><i class="fa   "></i>/core/selector.js</a>
+</li>
+
+<li id="menu_id-core-validation_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-validation_js',3214); return false;" ><i class="fa   "></i>/core/validation.js</a>
+</li>
+
+<li id="menu_id-core-validator_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-core-validator_js',3216); return false;" ><i class="fa   "></i>/core/validator.js</a>
+</li>
+
+<li id="menu_id-locale-de_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-locale-de_js',3218); return false;" ><i class="fa   "></i>/locale/de.js</a>
+</li>
+
+<li id="menu_id-locale-en_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-locale-en_js',3220); return false;" ><i class="fa   "></i>/locale/en.js</a>
+</li>
+
+<li id="menu_id-locale-locale_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-locale-locale_js',3308); return false;" ><i class="fa   "></i>/locale/locale.js</a>
+</li>
+
+<li id="menu_id-locale-nl_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-locale-nl_js',3310); return false;" ><i class="fa   "></i>/locale/nl.js</a>
+</li>
+
+<li id="menu_id-locale-zh-cn_js" class="filelist" >
+   <a href="#" onclick="link_jump('id-locale-zh-cn_js',3312); return false;" ><i class="fa   "></i>/locale/zh-cn.js</a>
+</li>
+<!--SIDE_MENU_END-->
+                        </ul>
+                    </div>
+                </div>
+	      </div> <!-- sidebar-wrapper -->
+            </nav>
+
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+<!--CONTENT_START-->
+<div id="scrollArea" class="clusterize-scroll split content">
+<div id="contentArea" class="clusterize-content">
+<div class="clusterize-no-data">Loading data…</div>
+</div>
+</div>
+<div id="scrollArea2" class="clusterize-scroll split content">
+<div id="contentArea2" class="clusterize-content">
+<div class="clusterize-no-data"></div>
+</div>
+</div>
+<!--CONTENT_END-->
+                      </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- jQuery -->
+        <script src="../js/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="../js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        
+        <script src="../js/metisMenu.min.js"></script>
+<!--
+        <script src="../js/clusterize.min.js"></script>
+        <script src="../js/externs.js"></script>
+        -->
+
+        <!-- Morris Charts JavaScript -->
+        <!--
+        <script src="../js/raphael.min.js"></script>
+        <script src="../js/morris.min.js"></script>
+        <script src="../js/morris-data.js"></script>
+        -->
+
+        <!-- Custom Theme JavaScript -->
+        <script src="../js/startmin.js"></script>
+        
+        <script src="../js/jquery.scrollify.js"></script>
+        
+
+    <!-- Menu Toggle Script -->
+       <script>
+
+/*
+$(function() {  
+
+    // Default
+    jQuery.scrollSpeed(100, 1800);
+    
+    // Custom Easing
+    //jQuery.scrollSpeed(100, 800, 'easeOutCubic');
+    
+});
+  */       
+
+/*
+
+https://stackoverflow.com/questions/12965296/how-to-get-maximum-document-scrolltop-value
+*/
+
+(function(elmProto){
+    if ('scrollTopMax' in elmProto) {
+        return;
+    }
+    Object.defineProperties(elmProto, {
+        'scrollTopMax': {
+            get: function scrollTopMax() {
+              return this.scrollHeight - this.clientTop;
+            }
+        },
+        'scrollLeftMax': {
+            get: function scrollLeftMax() {
+              return this.scrollWidth - this.clientLeft;
+            }
+        }
+    });
+}
+)(Element.prototype);
+
+
+
+    $(".menu-toggle").click(function(e) {
+		            e.preventDefault();
+			            $("#wrapper").toggleClass("toggled");
+                                     console.log("click menu-toggle")
+				        });
+
+     //console.log("menu-toggle set")
+
+
+   /*
+var data = [
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      1       </pre></div>', 
+'<div><pre>      2       </pre></div>', 
+'<div><pre>      3       </pre></div>', 
+'<div><pre>      4       </pre></div>', 
+'<div><pre>      5       </pre></div>', 
+'<div><pre>      6       </pre></div>', 
+'<div><pre>      7       </pre></div>', 
+'<div><pre>      8       </pre></div>', 
+'<div><pre>      9       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A       </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A e     </pre></div>', 
+'<div><pre>      A  r    </pre></div>', 
+'<div><pre>      A  e    </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+'<div><pre>      A   e   </pre></div>', 
+];
+var clusterize = new Clusterize({
+  scrollId: 'scrollArea',
+  contentId: 'contentArea',
+  rows_in_block: 200,
+  blocks_in_cluster: 4
+});
+*/
+
+//document.addEventListener('touchstart', handler, {passive: true});
+
+var data = [];
+var search_set = [];
+var clusterize;
+var search = document.getElementById('search');
+var search_button = document.getElementById('search-button');
+var search_reset = document.getElementById('search-reset');
+var search_number =1;
+
+var step_row = 0;
+var file_index =[];
+
+var split_button = document.getElementById('split-view');
+
+var curent_active_menu_item = null;
+
+//devicePixelRatio = 1;
+
+function active_index(index) {
+
+  //console.log("active_index: " + index);
+
+  //return;
+
+  var head = 0;
+  var tail = file_index.length;
+  //console.log(tail);
+  while (head <= tail) {
+     var center = Math.floor((head + tail) / 2);  
+     //console.log("center:" + center);
+    if (file_index[center]['head_index'] <= index &&
+        file_index[center]['tail_index'] >= index 
+       ) {
+         //console.log(" *** active: " + index + " " +file_index[center]['menuid']);
+	 var menu_item = document.getElementById(file_index[center]['menuid']);
+         if (menu_item) {
+             //console.dir(menu_item);
+
+               if (curent_active_menu_item) {
+                  curent_active_menu_item.classList.remove("active_item");
+               }
+
+                menu_item.classList.add("active_item");
+
+                curent_active_menu_item = menu_item;
+
+
+             } else {
+             console.log("not found menu_item");
+
+             }
+
+      return;
+    } else if (file_index[center]['tail_index'] < index) {
+      head = center + 1;
+    } else {
+      tail = center - 1;
+    }
+
+  }
+
+
+}
+
+
+function dataset(getdata) {
+
+	   //console.log(getdata);
+
+            //console.dir(getdata);
+   getdata=getdata.trim();
+   getdata=getdata.replace(/(\r?\n)+/g,"\n");
+
+	    data =  getdata.split(/\n/);
+            //console.log(data.length);
+            //console.log(data);
+            //for (var x = 0; x < data.length; x++) {
+            //   data[x] = hljs.highlight('javascript',data[x]).value +'\n';
+            //    hljs.highlightBlock(data[x]);
+            //}
+            for (var x = 0; x < data.length; x++) {
+            result = data[x].match(/class=\"pagelink\"/);
+            if (result) {
+               //console.dir(data[x]);
+               var rs  = data[x].match(/id=\"(\S+)\" /);
+               //console.log(rs[0]);
+               //console.log(rs[1]);
+               var id = rs[1];
+
+               if (file_index.length > 0) {
+                   file_index[file_index.length -1 ]['tail_index'] = x -1;
+                   //file_index[1]['tail_index'] = x -1;
+                   //console.dir(file_index[0]['tail_index']);
+               }
+
+               file_index.push(
+                    {
+                         head_index : x,
+                         tail_index : 9999,
+                         id : id,
+                         menuid:  'menu_' + id
+                    }
+               );
+
+            }
+
+            }
+
+            console.dir(file_index);
+
+	    clusterize = new Clusterize({
+	           scrollId: 'scrollArea',
+                   contentId: 'contentArea',
+		   rows: data,
+		   //tag: 'div',
+		   //rows_in_block: 100, 
+		   //blocks_in_cluster: 4,
+                   callbacks: {
+                                clusterWillChange: function() {},
+                                clusterChanged: function() {},
+                                scrollingProgress: function(progress) {
+                                    //console.log("scroll:" + progress.toString());
+                                    var index = (rows * progress/100 ).toFixed(0)
+                                    //console.log(index);
+                                    //index = index +1;
+                                    //active_index(index );
+                                    var scrollElement = document.getElementById('scrollArea');
+                                    // スクロール要素の絶対座標を取得
+                                    var rect = scrollElement.getBoundingClientRect();
+                                    // ドキュメントの絶対座標からスクロール要素で表示している要素の一番上のやつを取得
+                                    //console.log(" devicePixelRatio:" ,devicePixelRatio) ;
+                                    //console.log("rect:", rect.left, rect.top);
+                                    //var targetElement = document.elementFromPoint(rect.left+3, rect.top+1 );
+                                    var targetElement = document.elementFromPoint(
+                                    //rect.left *  devicePixelRatio, 
+                                    rect.left , 
+                                    //rect.top  *  devicePixelRatio
+                                    rect.top  
+                                    );
+                                    //document.elementFromPoint(X - window.pageXOffset, Y - window.pageYOffset);
+
+                                    //console.log(targetElement.attributes['row']);
+                                    if (targetElement) {
+                                        var attrs = targetElement.attributes;
+                                        //console.log(targetElement.tagName);
+                                        //console.dir(targetElement);
+                                        var row;
+                                        //console.dir(attrs);
+                                        for(var i = attrs.length - 1; i >= 0; i--) {
+                                             //output += attrs[i].name + "->" + attrs[i].value;
+                                             if (attrs[i].name == "row") {
+                                               row = attrs[i].value; 
+                                               break;
+                                             }
+                                         }
+                                         if (row) {
+                                                console.log(row);
+                                                active_index(parseInt(row, 10));
+                                          } else {
+                                                console.log("row not match:"+ targetElement.tagName);
+                                                console.dir(targetElement);
+                                                //console.dir(attrs);
+                                          }
+                                      } else {
+                                           console.log("targetElment not found" );
+
+                                      }
+                                 }
+                              } //--callbacks
+	   });
+
+	   clusterize.refresh(true);
+           var rows = clusterize.getRowsAmount();
+	   var max = document.getElementById('scrollArea').scrollTopMax ;
+	   //step_row = max/ (rows+5);
+	   step_row = max/ (rows) ;
+
+           console.log("rows      :" + rows.toString());
+           console.log("scroll_max:" + max.toString());
+           console.log("step_row  :" + step_row.toString());
+//active_index(1);
+
+
+}
+
+
+    $.get("content_data.html",
+         dataset,
+	 'html'
+	 );
+
+var filterRows = function(rows) {
+  var results = [];
+  for(var i = 0, ii = rows.length; i < ii; i++) {
+    if(rows[i].active) results.push(rows[i].markup)
+  }
+  return results;
+}
+
+var onSearchReset = function() {
+  console.log("serch reset...");
+
+  for(var x=0; x<search_set.length;  x++) {
+     var set = search_set[x];
+     data[set['row']-1]= set['data'];
+
+  }
+
+  search_set.length = 0;
+  clusterize.update(data);
+  quantity.value = '';
+  quantity_base.value = '/ ' ;
+}
+var onSearch_keydown = function(ele) {
+    if(event.key === 'Enter') {
+          console.log("keydown");
+          onSearch();
+    }
+}
+
+var onSearch = function() {
+
+  if (search.value == "") {
+      console.log("serch... no keyword");
+      return;
+  }
+  console.log("serch...");
+  console.log("value:" +search.value);
+  //search_set.length = 0;
+
+  var s_count =0;
+  for( var i=0; i<data.length; i++) {
+
+     if (data[i].includes(search.value)) {
+                s_count++;
+       var  tmp = data[i].replace(/^\<div/, "<div id=\"SEARCH_POINT_" + s_count.toString() +"\" ");
+       search_set.push({ row:i+1 , data: data[i]})
+       var  tmp2 = tmp.replace(/\<pre/, "<pre style=\"background-color:yellow;\" ");
+       data[i] = tmp2;
+
+
+     }
+
+  }
+       //data[10] = "<div><pre>    OKOKOK              </pre></div>";
+ 
+  clusterize.update(data);
+
+  search_number = 1;
+  quantity.value = 1;
+  quantity_base.value = '/ ' + s_count.toString();
+
+  /*
+  //document.getElementById('SEARCH_PONT')[3].scrollIntoView();
+  var offset = $('#SEARCH_POINT').offset() || {top: 0, left: 0};
+
+  $(window).scrollTop(offset.top);
+  */
+
+  // https://qiita.com/amamamaou/items/728d571d508347b2bc82
+
+  //var element = document.getElementById('SEARCH_POINT_1');
+  var element = document.getElementById('SEARCH_POINT_' + search_number.toString());
+
+  console.dir(element);
+// 上端に来るようにスクロールさせたい
+element.scrollIntoView(true);
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+//element.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+
+
+/*
+  for(var i = 0, ii = data.length; i < ii; i++) {
+    var suitable = false;
+    for(var j = 0, jj = data[i].values.length; j < jj; j++) {
+      if(data[i].values[j].toString().indexOf(search.value) + 1)
+        suitable = true;
+    }
+    data[i].active = suitable;
+  }
+  clusterize.update(filterRows(data));
+*/
+}
+
+function next_search() {
+  search_number = quantity.value ;
+
+   console.log("next_seach :",search_number.toString());
+
+
+   var row = search_set[search_number]['row'];
+
+   document.getElementById('scrollArea').scrollTop = (row) * (step_row ) ;
+
+  var id = 'SEARCH_POINT_' + search_number.toString();
+   setTimeout(id_check, 300, id);
+
+}
+
+var split = null;
+var split_clusterize = null;
+
+function onSplit() {
+
+  console.log("onSplit");
+
+  if (split == null) {
+
+//  split =Split(['#splitView1', '#splitView2'], {
+  split =Split(['#scrollArea', '#scrollArea2'], {
+        direction: 'vertical',
+        cursor: 'row-resize',
+//        direction: 'horizontal',
+//        cursor: 'col-resize',
+        gutterSize: 5,
+  })
+ //      split.setSizes([50, 50]);
+
+
+   split_clusterize = new Clusterize({
+                 scrollId: 'scrollArea2',
+                 contentId: 'contentArea2',
+                 rows: data,
+    });
+
+   split_clusterize.refresh(true);
+
+   } else {
+
+   split_clusterize.clear();
+   split_clusterize.destroy();
+   split.destroy();
+   split = null;
+
+   }
+
+}
+
+search.onkeydown = onSearch_keydown;
+search_button.onclick = onSearch;
+search_reset.onclick = onSearchReset;
+
+split_button.onclick = onSplit;
+//-----------------------------
+quantity = document.getElementById('quantity');
+quantity_base = document.getElementById('quantity_base');
+
+button_up=document.getElementById('up');
+button_down=document.getElementById('down');
+
+button_up.onclick=function() {setQuantity('up');}
+button_down.onclick=function() {setQuantity('down');}
+
+function setQuantity(upordown) {
+  /*
+     if (upordown == 'up'){
+         var max = document.getElementById('scrollArea').scrollTopMax;
+         console.log("scrollMax:" + max.toString());
+         document.getElementById('scrollArea').scrollTop = max;
+         //document.getElementById('scrollArea').scrollTop = 70000;
+      }
+     if (upordown == 'down'){
+         document.getElementById('scrollArea').scrollTop = 0;
+      }
+  */
+  
+    var quantity = document.getElementById('quantity');
+
+    if (quantity.value > 1) {
+        if (upordown == 'up'){++quantity.value;}
+        else if (upordown == 'down'){--quantity.value;}}
+    else if (quantity.value == 1) {
+        if (upordown == 'up'){++quantity.value;}}
+    else
+        {quantity.value=1;}
+
+    next_search();
+    
+}
+
+/* Get the TOP position of a given element. */
+function getPositionTop(element){
+    var offset = 0;
+    while(element) {
+        offset += element["offsetTop"];
+        element = element.offsetParent;
+    }
+    return offset;
+}
+
+/* Is a given element is visible or not? */
+function isElementVisible(eltId) {
+    var elt = document.getElementById(eltId);
+    if (!elt) {
+       // Element not found.
+       console.log("Element not found. :" + eltId);
+       return false;
+    }
+    // Get the top and bottom position of the given element.
+    var posTop = getPositionTop(elt);
+    var posBottom = posTop + elt.offsetHeight;
+    // Get the top and bottom position of the *visible* part of the window.
+    //var visibleTop = document.body.scrollTop;
+    var visibleTop = document.getElementById('scrollArea').scrollTop;
+    var visibleBottom = visibleTop + document.getElementById('scrollArea').offsetHeight;
+    return ((posBottom >= visibleTop) && (posTop <= visibleBottom));
+}
+
+
+function id_check(id) {
+  //console.log("time out");
+   var idele = document.getElementById(id)
+   //console.dir(idele);
+   if (idele ) {
+    // console.log("exist element: " + id);
+      idele.scrollIntoView();
+     //           console.log(clusterize.getScrollProgress());
+
+   } else {
+
+     console.log("not exist element: " + id);
+
+   }
+
+   if (isElementVisible(id)) {
+     console.log("visible element: " + id);
+
+    } else {
+     console.log("not visible element: " + id);
+
+    }
+
+}
+
+function link_jump(id,row) {
+
+   //console.log("link_jump  : " + id);
+   //console.log("link_jump row : " + row.toString());
+   //console.log("link_jump step: " + (row * step_row).toString());
+
+   //document.getElementById('scrollArea').scrollTop = (row * step_row)-400;
+   //document.getElementById('scrollArea').scrollTop = ((row-30) * (step_row + 0.1));
+   //document.getElementById('scrollArea').scrollTop = (row+1) * (step_row ) -200;
+   document.getElementById('scrollArea').scrollTop = (row) * (step_row ) ;
+
+   setTimeout(id_check, 300, id);
+
+}
+
+//onSplit();
+
+    </script>
+
+    </body>
+</html>

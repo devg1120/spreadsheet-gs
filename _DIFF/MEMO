@@ -1,0 +1,8 @@
+RUN.sh lighttpd_startmin_template.conf
+
+
+
+
+   python treediff.py
+   ./RUN.sh  lighttpd_template_dataproxy.conf
+   ./RUN.sh  lighttpd_template_dataproxy_scrolltop.conf

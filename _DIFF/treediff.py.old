@@ -1,0 +1,112 @@
+import os
+import sys
+import re
+import pprint
+import subprocess
+
+path1="../src"
+path2="/home/gusa1120/x-spreadsheet/src"
+# traverse root directory, and list directories as dirs and files as files
+def dump1(filepath):
+    for root, dirs, files in os.walk(filepath):
+        path = root.split(os.sep)
+        print((len(path) - 1) * '---', os.path.basename(root))
+        for file in files:
+            print(len(path) * '---', file)
+    
+def dump2(filepath):
+    for root, dirs, files in os.walk(filepath):
+        print('root -------------')
+        print(root)
+        print('dirs -------------')
+        print(dirs)
+        print('files -------------')
+        print(files)
+
+def get(filepath):
+    dic = {}
+    for root, dirs, files in os.walk(filepath):
+        #root_p = re.sub('^' + filepath , '', root)
+        root_p = root.replace(filepath , '')
+        if root_p == '':
+            root_p = '/'
+
+        dic[root_p] = { 'root'  : root_p,
+                      'files' : files,
+                      'dirs'  : dirs }
+    return dic
+
+def convlist(dic):
+    #filelist = ''
+    filelist = []
+    for element in dic:
+        #print('-------------------')
+        #pprint.pprint(dic[element])
+        #print('-------------------')
+        root = dic[element]['root']
+        for file in dic[element]['files']:
+            if root == '/':
+                #print(root + file)
+                str = root + file
+                #filelist += str + '\n'
+            else:
+                #print(root + '/' + file)
+                str = root + '/' + file
+                #filelist += str + '\n'
+                #filelist.append(str)
+            filelist.append( { 'path' : str, 'ignore' : False, 'other_exist' : False })
+
+    return filelist
+
+def is_exist( path, list):
+    for element in list:
+        if element['path'] == path:
+            return True
+    return False
+
+
+def diffcheck(list1, list2 ):
+    for element in list1:
+        element['other_exist'] = is_exist(element['path'], list2)
+    for element in list2:
+        element['other_exist'] = is_exist(element['path'], list1)
+
+
+#dump2(path)
+
+dic1 = get(path1)
+#pprint.pprint(dic1)
+dic2 = get(path2)
+#pprint.pprint(dic2)
+
+
+filelist1 = convlist(dic1)
+filelist2 = convlist(dic2)
+#print('---------------')
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+#print('-------------------------------------------------------')
+
+diffcheck(filelist1, filelist2)
+#pprint.pprint(filelist1)
+#print('---------------')
+#pprint.pprint(filelist2)
+
+def diff(filelist):
+    for element in filelist:
+        if element['other_exist']:
+            print(path1 + element['path'] + '  ->  ' +  path2 + element['path'])
+            diff1 = path1 + element['path']
+            diff2 = path2 + element['path']
+            command = ["diff", "-y", diff1 , diff2]
+            res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            sys.stdout.buffer.write(res.stdout)
+            
+
+
+#diff(filelist1)
+
+command = ["diff", "-y", "AAA.txt", "BBB.txt"]
+res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+sys.stdout.buffer.write(res.stdout)
